@@ -8,11 +8,10 @@ use Laravel\Sanctum\HasApiTokens;
 class siswa extends Model
 {   use HasApiTokens;
 
+    protected $table = 'siswas';
     protected $primaryKey = 'nis';
-
     public $incrementing = false;
-
-    protected $keyType = 'string';
+    protected $keyType = 'int';
 
     protected $fillable = [
         'nis','kelas'
@@ -20,6 +19,6 @@ class siswa extends Model
     
     public function inputAspirasi()
     {
-        return $this->hasMany(input_aspirasi::class, 'nis', 'nis');
+        return $this->hasMany(InputAspirasi::class, 'nis', 'nis');
     }
 }

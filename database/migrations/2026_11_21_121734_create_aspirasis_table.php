@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('aspirasis', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id_aspirasi');
+            $table->enum('status', ['Menunggu', 'Proses', 'Selesai'])->default('Menunggu');
+            $table->unsignedInteger('id_kategori');
+            $table->integer('feedback')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_kategori')->references('id_kategori')->on('kategoris')->cascadeOnDelete();
         });
     }
 

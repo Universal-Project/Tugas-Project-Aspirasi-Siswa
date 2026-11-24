@@ -2,64 +2,83 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\aspirasi;
+use App\Models\Aspirasi;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AspirasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // filter: ?tanggal=2026-11-24&bulan=11&tahun=2026&nis=123&id_kategori=1&status=Proses
+    public function index(Request $request): JsonResponse
     {
-        //
+        $query = Aspirasi::with(['kategori', 'inputAspirasi.siswa']);
+
+        $query->when($request->tanggal, fn ($q, $v) => $q->whereDate('created_at', $v));
+        $query->when($request->bulan, fn ($q, $v) => $q->whereMonth('created_at', $v));
+        $query->when($request->tahun, fn ($q, $v) => $q->whereYear('created_at', $v));
+        $query->when($request->id_kategori, fn ($q, $v) => $q->where('id_kategori', $v));
+        $query->when($request->status, fn ($q, $v) => $q->where('status', $v));
+        $query->when($request->nis, fn ($q, $v) =>
+            $q->whereHas('inputAspirasi', fn ($i) => $i->where('nis', $v))
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar aspirasi',
+            'data'    => $query->latest()->paginate(10),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(Aspirasi $aspirasi): JsonResponse
     {
-        //
+        return response()->json([
+            'success' => true,
+            'data'    => $aspirasi->load(['kategori', 'inputAspirasi.siswa']),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function updateStatus(Request $request, Aspirasi $aspirasi): JsonResponse
     {
-        //
+        $data = $request->validate([
+            'status' => 'required|in:Menunggu,Proses,Selesai',
+        ]);
+
+        $aspirasi->update($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diperbarui',
+            'data'    => $aspirasi->load('kategori'),
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(aspirasi $aspirasi)
+    public function updateFeedback(Request $request, Aspirasi $aspirasi): JsonResponse
     {
-        //
+        $data = $request->validate([
+            'feedback' => 'required|integer',
+        ]);
+
+        $aspirasi->update($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Feedback berhasil disimpan',
+            'data'    => $aspirasi->load('kategori'),
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(aspirasi $aspirasi)
+    // Hapus pasangan di kedua tabel (opsional, misalnya untuk spam)
+    public function destroy(Aspirasi $aspirasi): JsonResponse
     {
-        //
-    }
+        DB::transaction(function () use ($aspirasi) {
+            $aspirasi->inputAspirasi()->delete();
+            $aspirasi->delete();
+        });
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, aspirasi $aspirasi)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(aspirasi $aspirasi)
-    {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => 'Aspirasi berhasil dihapus',
+        ]);
     }
 }
