@@ -11,9 +11,9 @@ class kategori extends Model
     protected $fillable = ['ket_kategori'];
 
     public function inputAspirasi(){
-        return $this->hasMany(InputAspirasi::class, 'kategori_id');
+        return $this->hasMany(InputAspirasi::class, 'id_kategori', 'id_kategori');
     }
     public function aspirasi(){
-        return $this->hasMany(Aspirasi::class, 'kategori_id');
+        return $this->hasMany(Aspirasi::class, 'id_kategori', 'id_kategori');
     }
 }

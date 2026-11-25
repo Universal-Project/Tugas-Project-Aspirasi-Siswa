@@ -56,7 +56,8 @@ class AspirasiController extends Controller
     public function updateFeedback(Request $request, Aspirasi $aspirasi): JsonResponse
     {
         $data = $request->validate([
-            'feedback' => 'required|integer',
+            'feedback' => 'required',
+            'status'   => 'nullable|in:Menunggu,Proses,Selesai',
         ]);
 
         $aspirasi->update($data);
@@ -64,7 +65,7 @@ class AspirasiController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Feedback berhasil disimpan',
-            'data'    => $aspirasi->load('kategori'),
+            'data'    => $aspirasi->load(['kategori', 'inputAspirasi.siswa']),
         ]);
     }
 
