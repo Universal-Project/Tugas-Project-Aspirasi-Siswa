@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('id_aspirasi');
             $table->enum('status', ['Menunggu', 'Proses', 'Selesai'])->default('Menunggu');
             $table->unsignedInteger('id_kategori');
-            $table->integer('feedback')->nullable();
+            $table->text('feedback')->nullable();
             $table->timestamps();
 
             $table->foreign('id_kategori')->references('id_kategori')->on('kategoris')->cascadeOnDelete();

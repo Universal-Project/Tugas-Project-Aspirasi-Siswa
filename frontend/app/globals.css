@@ -1,0 +1,64 @@
+/* ============================================
+   SIPELAPOR — Global CSS Reset
+   Styled-components handles component styles.
+   This file only handles base resets & fonts.
+   ============================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  width: 100%;
+  background-color: #F7F9FC;
+  color: #171717;
+  font-family: 'Plus Jakarta Sans', 'Poppins', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+/* Remove default link styles */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Inherit font for form elements */
+button, input, select, textarea, optgroup {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Images behave as blocks by default */
+img, svg, video {
+  display: block;
+  max-width: 100%;
+}
+
+/* Remove list styles */
+ul, ol {
+  list-style: none;
+}
+
+/* Focus visible for keyboard nav */
+:focus-visible {
+  outline: 2px solid #009BE8;
+  outline-offset: 2px;
+}
